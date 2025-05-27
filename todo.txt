@@ -1,0 +1,3 @@
+return doctor in app=sidebar.tsx
+return doctor type in nav-user.tsx
+return useAuth in (pages)/layout.tsx
