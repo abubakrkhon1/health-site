@@ -89,7 +89,7 @@ export default function LoginPage() {
           <div className="mt-6 text-center">
             <p className="text-sm text-muted-foreground">
               Нет аккаунта?{" "}
-              <Link href="/signup" className="text-blue-600 hover:underline">
+              <Link href="/sign-up" className="text-blue-600 hover:underline">
                 Создать аккаунт
               </Link>
             </p>

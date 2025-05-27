@@ -269,20 +269,20 @@ const features = [
 export default function Home() {
   const router = useRouter();
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <div className="flex min-h-screen flex-col bg-white dark:bg-gray-900">
       {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b bg-white shadow-sm">
+      <header className="sticky top-0 z-50 w-full border-b bg-white dark:bg-gray-900 shadow-sm dark:border-gray-800">
         <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
           <div className="flex items-center gap-2">
-            <Stethoscope className="h-8 w-8 text-green-600" />
-            <span className="text-2xl font-bold text-gray-900">
+            <Stethoscope className="h-8 w-8 text-green-600 dark:text-green-500" />
+            <span className="text-2xl font-bold text-gray-900 dark:text-white">
               HealthConnect
             </span>
           </div>
           <nav className="hidden md:flex gap-8">
             <Link
               href="#"
-              className="text-sm font-medium text-gray-700 hover:text-green-600 transition-colors"
+              className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-500 transition-colors"
             >
               Главная страница
             </Link>
@@ -314,12 +314,13 @@ export default function Home() {
           <div className="flex items-center gap-4">
             <Button
               variant="outline"
-              className="hidden md:flex border-green-600 text-green-600 hover:bg-green-50"
+              className="hidden md:flex border-green-600 dark:border-green-500 text-green-600 dark:text-green-500 hover:bg-green-50 dark:hover:bg-green-950"
+              onClick={() => router.push("/sign-in")}
             >
               Войти
             </Button>
             <Button
-              className="bg-green-600 hover:bg-green-700 text-white"
+              className="bg-green-600 dark:bg-green-500 hover:bg-green-700 dark:hover:bg-green-600 text-white"
               onClick={() => router.push("/sign-up")}
             >
               Начать
@@ -331,7 +332,7 @@ export default function Home() {
       {/* Scrollable Main Content */}
       <div className="flex-1 overflow-y-auto">
         <main className="pb-12">
-          <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-br from-green-50 via-white to-green-50">
+          <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-br from-green-50 via-white to-green-50 dark:from-green-950 dark:via-gray-900 dark:to-green-950">
             <div className="container mx-auto px-4 md:px-6">
               <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
                 <div className="flex flex-col justify-center space-y-6">
@@ -339,13 +340,13 @@ export default function Home() {
                     <Badge className="bg-green-100 text-green-800 hover:bg-green-100 border-none w-fit">
                       🏥 Надёжная медицинская сеть
                     </Badge>
-                    <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl xl:text-6xl">
+                    <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl xl:text-6xl dark:text-white">
                       Ваше Здоровье,
                     </h1>
-                    <span className="text-green-600 text-4xl font-bold tracking-tighter sm:text-5xl xl:text-6xl">
+                    <span className="text-green-600 dark:text-green-500 text-4xl font-bold tracking-tighter sm:text-5xl xl:text-6xl">
                       Наш Приоритет!
                     </span>
-                    <p className="max-w-[600px] text-gray-600 text-lg md:text-xl">
+                    <p className="max-w-[600px] text-gray-600 dark:text-gray-300 text-lg md:text-xl">
                       Здесь здоровье становится удобным и доступным.
                       Записывайтесь на приём, получайте рекомендации врачей,
                       храните медицинские документы и следите за своим
