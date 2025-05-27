@@ -69,7 +69,7 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+    <div className="min-h-screen flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
@@ -78,10 +78,10 @@ export default function SignupPage() {
             </div>
           </div>
           <CardTitle className="text-2xl font-bold">
-            Doctor Registration
+            Регистрация специалиста
           </CardTitle>
           <CardDescription>
-            Create your account to access the clinic dashboard
+            Создайте аккаунт и начните работу с вашей клиники прямо сейчас!
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -93,11 +93,11 @@ export default function SignupPage() {
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="full_name">Full Name</Label>
+              <Label htmlFor="full_name">Полное имя</Label>
               <Input
                 id="full_name"
                 name="full_name"
-                placeholder="Dr. John Smith"
+                placeholder="Фрэнк Смит"
                 value={formData.full_name}
                 onChange={handleChange}
                 required
@@ -118,11 +118,11 @@ export default function SignupPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="specialization">Specialization</Label>
+              <Label htmlFor="specialization">Специализация</Label>
               <Input
                 id="specialization"
                 name="specialization"
-                placeholder="Cardiology, Pediatrics, etc."
+                placeholder="Кардиолог, педиатр и тд."
                 value={formData.specialization}
                 onChange={handleChange}
                 required
@@ -130,7 +130,7 @@ export default function SignupPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="phone">Phone</Label>
+              <Label htmlFor="phone">Номер телефона</Label>
               <Input
                 id="phone"
                 name="phone"
@@ -142,7 +142,7 @@ export default function SignupPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">Пароль</Label>
               <Input
                 id="password"
                 name="password"
@@ -154,7 +154,7 @@ export default function SignupPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm Password</Label>
+              <Label htmlFor="confirmPassword">Подтвердите пароль</Label>
               <Input
                 id="confirmPassword"
                 name="confirmPassword"
@@ -166,15 +166,15 @@ export default function SignupPage() {
             </div>
 
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Creating account..." : "Sign Up"}
+              {loading ? "Создание аккаунта..." : "Создать аккаунт"}
             </Button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-muted-foreground">
-              Already have an account?{" "}
-              <Link href="/login" className="text-blue-600 hover:underline">
-                Sign in here
+              У вас уже есть аккаунт?{" "}
+              <Link href="/sign-in" className="text-blue-600 hover:underline">
+                Войти здесь
               </Link>
             </p>
           </div>

@@ -14,7 +14,6 @@ export async function updateSession(request: NextRequest) {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
-          // Set cookies on the response (not request)
           cookiesToSet.forEach(({ name, value, options }) => {
             response.cookies.set(name, value, options);
           });
@@ -25,30 +24,23 @@ export async function updateSession(request: NextRequest) {
 
   const {
     data: { user },
-    error,
   } = await supabase.auth.getUser();
 
-  // Redirect unauthenticated users away from protected route
-  if (request.nextUrl.pathname.startsWith("/dashboard") && !user) {
+  const isPublic = ["/", "/sign-in", "/sign-up"].includes(
+    request.nextUrl.pathname
+  );
+
+  // ✅ Redirect unauthenticated users away from private pages
+  if (!isPublic && !user) {
     return NextResponse.redirect(new URL("/sign-in", request.url));
   }
 
-  // Redirect authenticated users away from public homepage
+  // ✅ Redirect authenticated users away from public auth pages
   if (
     user &&
-    (request.nextUrl.pathname === "/" ||
-      request.nextUrl.pathname === "/sign-in" ||
-      request.nextUrl.pathname === "/sign-up")
+    ["/", "/sign-in", "/sign-up"].includes(request.nextUrl.pathname)
   ) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
-  }
-
-  if (request.nextUrl.pathname === "/") {
-    if (user) {
-      return NextResponse.redirect(new URL("/dashboard", request.url));
-    } else {
-      return NextResponse.redirect(new URL("/sign-in", request.url));
-    }
+    // return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
   return response;

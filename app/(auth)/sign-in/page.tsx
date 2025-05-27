@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
-import { useAuthStore } from "@/store/useAuthStore";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -38,7 +37,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+    <div className="min-h-screen flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
@@ -46,9 +45,9 @@ export default function LoginPage() {
               <Stethoscope className="h-8 w-8 text-blue-600" />
             </div>
           </div>
-          <CardTitle className="text-2xl font-bold">Doctor Login</CardTitle>
+          <CardTitle className="text-2xl font-bold">Авторизация врача</CardTitle>
           <CardDescription>
-            Sign in to access your clinic dashboard
+            Зайдите в свой аккаунт, чтобы начать работу с системой
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -72,7 +71,7 @@ export default function LoginPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">Пароль</Label>
               <Input
                 id="password"
                 type="password"
@@ -83,15 +82,15 @@ export default function LoginPage() {
             </div>
 
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Signing in..." : "Sign In"}
+              {loading ? "Входим..." : "Войти"}
             </Button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-muted-foreground">
-              Don't have an account?{" "}
+              Нет аккаунта?{" "}
               <Link href="/signup" className="text-blue-600 hover:underline">
-                Sign up here
+                Создать аккаунт
               </Link>
             </p>
           </div>
