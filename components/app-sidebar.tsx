@@ -24,6 +24,7 @@ import {
 import { NavUser } from "./nav-user";
 import { useAuthStore } from "@/store/useAuthStore";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 
 export function AppSidebar() {
   const items = [
@@ -55,19 +56,20 @@ export function AppSidebar() {
   ];
 
   const doctor = useAuthStore((s) => s.doctor);
-  // const doctor = {avatar: "https://github.com/shadcn.png",
-  //   email: 'somet@email.com',
-  //   full_name: 'John Doe',
-  //   specialization: 'Cardiologist',
-  //   phone: '123123123',}
   const pathname = usePathname();
 
   return (
     <Sidebar>
       <SidebarHeader>
-        <h1 className="flex items-center gap-x-2 pl-4 pt-4 font-bold text-3xl">
-          {<Stethoscope />}Health
-        </h1>
+        <div className=" ml-4 mt-4">
+          <Image
+            src="/logo/logo2_no_bg_short.png"
+            width={120}
+            height={120}
+            alt="logo"
+            priority
+          />
+        </div>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>

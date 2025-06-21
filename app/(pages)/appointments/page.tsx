@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import {
   Plus,
   Clock,
@@ -7,88 +8,65 @@ import {
   DollarSign,
   Eye,
   Edit,
-  MoreHorizontal,
 } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/lib/supabase/supabaseClient";
+import { Appointment } from "@/types/types";
+import { format } from "date-fns";
 
 export default function AppointmentsPage() {
+  const [appointments, setAppointments] = useState([]);
+  const { loading, user } = useAuth();
+  const [appLoading, setAppLoading] = useState(true);
+
+  // Fetching Appointments from Supabase database
+  useEffect(() => {
+    if (!user?.id) return;
+    const fetchAppointments = async () => {
+      const { data, error } = await supabase
+        .from("appointments")
+        .select(
+          `*,
+            client:clients (*),
+            doctor:doctors (*)`
+        )
+        .gte("scheduled_at", new Date().toISOString())
+        .eq("doctor_id", user?.id)
+        .order("scheduled_at", { ascending: false });
+
+      if (error) {
+        console.error("Error fetching appointments:", error.message);
+        return;
+      }
+
+      setAppointments(data as []);
+      setAppLoading(false);
+    };
+    fetchAppointments();
+  }, [user?.id]);
+
   const stats = [
     {
       title: "Приёмы сегодня",
-      value: "3",
+      value: "#",
       icon: Clock,
     },
     {
       title: "Предстоящие",
-      value: "2",
+      value: "#",
       icon: Calendar,
     },
     {
       title: "Подтверждённые",
-      value: "3",
+      value: "#",
       icon: CheckCircle,
+      color: 'blue'
     },
     {
-      title: "Доход сегодня",
-      value: "₽9 000",
+      title: "Что-то",
+      value: "#",
       icon: DollarSign,
-    },
-  ];
-
-  const appointments = [
-    {
-      name: "Иван Петров",
-      age: 45,
-      phone: "+7 (495) 123-45-67",
-      date: "2024-01-20",
-      time: "09:00",
-      type: "Консультация",
-      cost: "₽3 500",
-      status: "confirmed",
-      statusText: "Подтверждён",
-    },
-    {
-      name: "Мария Сидорова",
-      age: 32,
-      phone: "+7 (495) 234-56-78",
-      date: "2024-01-20",
-      time: "10:30",
-      type: "Повторный приём",
-      cost: "₽2 500",
-      status: "confirmed",
-      statusText: "Подтверждён",
-    },
-    {
-      name: "Алексей Козлов",
-      age: 58,
-      phone: "+7 (495) 345-67-89",
-      date: "2024-01-20",
-      time: "11:15",
-      type: "Осмотр",
-      cost: "₽3 000",
-      status: "waiting",
-      statusText: "Ожидает",
-    },
-    {
-      name: "Елена Волкова",
-      age: 28,
-      phone: "+7 (495) 456-78-90",
-      date: "2024-01-21",
-      time: "14:00",
-      type: "Консультация",
-      cost: "₽4 000",
-      status: "completed",
-      statusText: "Завершён",
-    },
-    {
-      name: "Дмитрий Новиков",
-      age: 41,
-      phone: "+7 (495) 567-89-01",
-      date: "2024-01-22",
-      time: "15:30",
-      type: "Повторный приём",
-      cost: "₽3 200",
-      status: "confirmed",
-      statusText: "Подтверждён",
+      color: 'green'
     },
   ];
 
@@ -96,7 +74,7 @@ export default function AppointmentsPage() {
     switch (status) {
       case "confirmed":
         return "dark:bg-green-900/50 dark:text-green-400 dark:border-green-800 bg-green-50 text-green-700 border-green-200";
-      case "waiting":
+      case "pending":
         return "dark:bg-yellow-900/50 dark:text-yellow-400 dark:border-yellow-800 bg-yellow-50 text-yellow-700 border-yellow-200";
       case "completed":
         return "dark:bg-blue-900/50 dark:text-blue-400 dark:border-blue-800 bg-blue-50 text-blue-700 border-blue-200";
@@ -137,7 +115,7 @@ export default function AppointmentsPage() {
                     </p>
                   </div>
                   <div className="h-8 w-8 bg-gray-100 dark:bg-slate-600 rounded-md flex items-center justify-center">
-                    <IconComponent className="h-4 w-4 dark:text-white/70" />
+                    <IconComponent color={stat.color} className="h-4 w-4 dark:text-white/70" />
                   </div>
                 </div>
               </div>
@@ -150,8 +128,12 @@ export default function AppointmentsPage() {
           <div className="p-6 border-b dark:border-white/10">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-semibold dark:text-white/90">Все приёмы</h3>
-                <p className="text-sm dark:text-white/50">Управление записями на приём</p>
+                <h3 className="text-lg font-semibold dark:text-white/90">
+                  Все приёмы
+                </h3>
+                <p className="text-sm dark:text-white/50">
+                  Управление записями на приём
+                </p>
               </div>
               <button className="w-fit h-9 px-4 py-2 bg-slate-700 text-white/90 text-sm font-medium rounded-md hover:bg-slate-600 transition-colors flex items-center justify-center space-x-2 max-w-[200px]">
                 <Plus className="h-4 w-4" />
@@ -161,34 +143,54 @@ export default function AppointmentsPage() {
           </div>
           <div className="p-6">
             <div className="space-y-4">
-              {appointments.map((appointment, index) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-between p-4 rounded-lg dark:hover:bg-slate-800 hover:bg-gray-50 transition-colors"
-                >
-                  <div className="space-y-1">
-                    <p className="font-medium dark:text-white/90">{appointment.name}</p>
-                    <p className="text-sm dark:text-white/50">{appointment.type}</p>
-                    <div className="flex items-center space-x-2 text-sm dark:text-white/40">
-                      <Clock className="h-4 w-4" />
-                      <span>{appointment.time}</span>
+              {appLoading
+                ? Array.from({ length: 4 }).map((_, id) => (
+                    <div
+                      key={id}
+                      className="flex h-16 animate-pulse bg-gray-200 items-center justify-between p-4 rounded-lg dark:hover:bg-slate-800 hover:bg-gray-200 transition-colors"
+                    ></div>
+                  ))
+                : appointments.map((appt: Appointment, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between p-4 rounded-lg dark:hover:bg-slate-800 hover:bg-gray-50 transition-colors"
+                    >
+                      <div className="space-y-1">
+                        <p className="font-medium dark:text-white/90">
+                          {appt.client.full_name}
+                        </p>
+                        <p className="text-sm dark:text-white/50">
+                          {appt.notes || "Notes..."}
+                        </p>
+                        <div className="flex items-center space-x-2 text-sm dark:text-white/40">
+                          <Clock className="h-4 w-4" />
+                          <span>
+                            {format(
+                              new Date(appt.scheduled_at),
+                              "dd MMM yyyy, HH:mm"
+                            )}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-4">
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs ${getStatusColor(
+                            appt.status
+                          )}`}
+                        >
+                          {appt.status}
+                        </span>
+                        <div className="flex items-center space-x-2">
+                          <button className="p-2 hover:bg-slate-700 rounded-md transition-colors">
+                            <Eye className="h-4 w-4 dark:text-white/70" />
+                          </button>
+                          <button className="p-2 hover:bg-slate-700 rounded-md transition-colors">
+                            <Edit className="h-4 w-4 dark:text-white/70" />
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex items-center space-x-4">
-                    <span className={`px-3 py-1 rounded-full text-xs ${getStatusColor(appointment.status)}`}>
-                      {appointment.statusText}
-                    </span>
-                    <div className="flex items-center space-x-2">
-                      <button className="p-2 hover:bg-slate-700 rounded-md transition-colors">
-                        <Eye className="h-4 w-4 dark:text-white/70" />
-                      </button>
-                      <button className="p-2 hover:bg-slate-700 rounded-md transition-colors">
-                        <Edit className="h-4 w-4 dark:text-white/70" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
+                  ))}
             </div>
           </div>
         </div>

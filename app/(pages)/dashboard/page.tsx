@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Calendar,
   Clock,
@@ -10,15 +10,51 @@ import {
   MoreHorizontal,
   ChevronRight,
 } from "lucide-react";
+import AppointmentCard from "@/components/appointment-card";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useAuth } from "@/hooks/useAuth";
-import { Avatar } from "@/components/ui/avatar";
+import { supabase } from "@/lib/supabase/supabaseClient";
+import { Appointment, AppointmentCardProps } from "@/types/types";
+import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
+  const doctor = useAuthStore((s) => s.doctor);
+  const { loading, user } = useAuth();
+  const [appLoading, setAppLoading] = useState(true);
+  const [appointments, setAppointments] = useState([]);
+  const router = useRouter();
+
+  // Fetching Appointments from Supabase database
+  useEffect(() => {
+    if (!user?.id) return;
+    setAppLoading(true);
+    const fetchAppointments = async () => {
+      const { data, error } = await supabase
+        .from("appointments")
+        .select(
+          `*,
+          client:clients (*),
+          doctor:doctors (*)`
+        )
+        .gte("scheduled_at", new Date().toISOString())
+        .eq("doctor_id", user?.id)
+        .order("scheduled_at", { ascending: true });
+
+      if (error) {
+        console.error("Error fetching appointments:", error.message);
+        return;
+      }
+
+      setAppointments(data as []);
+      setAppLoading(false);
+    };
+    fetchAppointments();
+  }, [user?.id]);
+
   const stats = [
     {
-      title: "Приёмы сегодня",
-      value: "12",
+      title: "Предстоящие приёмы",
+      value: appointments.length,
       change: "+3 с вчера",
       changeType: "positive",
       icon: Calendar,
@@ -32,7 +68,7 @@ export default function Dashboard() {
     },
     {
       title: "Доход сегодня",
-      value: "₽184,500",
+      value: "₽111",
       change: "-8% с вчера",
       changeType: "negative",
       icon: DollarSign,
@@ -43,44 +79,6 @@ export default function Dashboard() {
       change: "+5 на этой неделе",
       changeType: "positive",
       icon: FileText,
-    },
-  ];
-
-  const todayAppointments = [
-    {
-      name: "Иван Петров",
-      type: "Консультация",
-      time: "09:00",
-      status: "confirmed",
-      statusText: "подтверждён",
-    },
-    {
-      name: "Мария Сидорова",
-      type: "Повторный приём",
-      time: "10:30",
-      status: "confirmed",
-      statusText: "подтверждён",
-    },
-    {
-      name: "Алексей Козлов",
-      type: "Осмотр",
-      time: "11:15",
-      status: "waiting",
-      statusText: "ожидает",
-    },
-    {
-      name: "Елена Волкова",
-      type: "Консультация",
-      time: "14:00",
-      status: "completed",
-      statusText: "завершён",
-    },
-    {
-      name: "Дмитрий Новиков",
-      type: "Повторный приём",
-      time: "15:30",
-      status: "confirmed",
-      statusText: "подтверждён",
     },
   ];
 
@@ -128,17 +126,17 @@ export default function Dashboard() {
     }
   };
 
-  const doctor = useAuthStore((s) => s.doctor);
-  const { loading } = useAuth();
-
-  if (loading) {
+  // Skeleton for loading
+  if (loading || appLoading) {
     return (
       <div className="min-h-screen p-6">
-        <div className="max-w-7xl mx-auto space-y-6 animate-pulse">
+        <div className="max-w-7xl mx-auto space-y-6">
           {/* Header Skeleton */}
           <div className="space-y-2">
-            <div className="h-8 w-48 bg-gray-300 dark:bg-slate-700 rounded" />
-            <div className="h-4 w-80 bg-gray-200 dark:bg-slate-600 rounded" />
+            <h1 className="text-3xl font-semibold tracking-tight text-black dark:text-white/90">
+              Панель управления
+            </h1>
+            <div className="h-4 w-80 bg-gray-200 dark:bg-slate-600 rounded animate-pulse" />
           </div>
 
           {/* Stats Skeleton */}
@@ -287,41 +285,15 @@ export default function Dashboard() {
             </div>
             <div className="p-6">
               <div className="space-y-4">
-                {todayAppointments.map((appointment, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-200 dark:hover:bg-slate-600 hover:cursor-pointer transition"
-                  >
-                    <div className="flex items-center space-x-3">
-                      <div className="h-8 w-8 rounded-full bg-gray-300 dark:bg-gray-800 flex items-center justify-center">
-                        <span className="text-sm font-medium text-black dark:text-white">
-                          {appointment.name
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")}
-                        </span>
-                      </div>
-                      <div>
-                        <p className="font-medium text-black dark:text-white">
-                          {appointment.name}
-                        </p>
-                        <p className="text-sm text-gray-600 dark:text-white/50">
-                          {appointment.type} • {appointment.time}
-                        </p>
-                      </div>
-                    </div>
-                    <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusColor(
-                        appointment.status
-                      )}`}
-                    >
-                      {appointment.statusText}
-                    </span>
-                  </div>
+                {appointments.map((appt: Appointment) => (
+                  <AppointmentCard key={appt.id} appointment={appt} />
                 ))}
               </div>
               <div className="mt-6 pt-4 border-t border-gray-300 dark:border-white/50">
-                <button className="w-full h-9 px-4 py-2 bg-gray-300 dark:bg-slate-700 text-black dark:text-white text-sm font-medium rounded-md hover:bg-gray-200 dark:hover:bg-slate-600 transition-colors flex items-center justify-center space-x-2">
+                <button
+                  onClick={() => router.push("/appointments")}
+                  className="w-full h-9 px-4 py-2 bg-gray-300 dark:bg-slate-700 text-black dark:text-white text-sm font-medium rounded-md hover:bg-gray-200 dark:hover:bg-slate-600 transition-colors flex items-center justify-center space-x-2"
+                >
                   <span>Посмотреть все приёмы</span>
                   <ChevronRight className="h-4 w-4 text-gray-700 dark:text-white" />
                 </button>

@@ -16,3 +16,45 @@ export type Doctor = {
   specialization: string;
   phone: string;
 };
+
+export type AppointmentCardProps = {
+  appointment: {
+    id: string;
+    scheduled_at: string;
+    status: string;
+    notes: string | null;
+    created_at: string;
+    doctor: {
+      full_name: string;
+      email: string;
+      phone: string;
+    };
+    client: {
+      full_name: string;
+      email: string;
+      phone: string;
+      gender: string;
+      dob: string;
+    };
+  };
+};
+
+export type Appointment = {
+    id: string;
+    scheduled_at: string;
+    status: string;
+    notes: string | null;
+    created_at: string;
+    doctor: {
+      full_name: string;
+      email: string;
+      phone: string;
+    };
+    client: {
+      full_name: string;
+      email: string;
+      phone: string;
+      gender: string;
+      dob: string;
+    };
+};

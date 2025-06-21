@@ -13,6 +13,10 @@ import {
   Heart,
   Stethoscope,
   ChevronRight,
+  ChevronsUpDown,
+  BadgeCheck,
+  Bell,
+  LogOut,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -29,6 +33,22 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
+import {
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@/components/ui/sidebar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const clinics = [
   {
@@ -268,6 +288,9 @@ const features = [
 
 export default function Home() {
   const router = useRouter();
+
+  const { loading, doctor, signOut } = useAuth();
+
   return (
     <div className="flex min-h-screen flex-col bg-white dark:bg-gray-900">
       {/* Header */}
@@ -312,19 +335,70 @@ export default function Home() {
             </Link>
           </nav>
           <div className="flex items-center gap-4">
-            <Button
-              variant="outline"
-              className="hidden md:flex border-green-600 dark:border-green-500 text-green-600 dark:text-green-500 hover:bg-green-50 dark:hover:bg-green-950"
-              onClick={() => router.push("/sign-in")}
-            >
-              Войти
-            </Button>
-            <Button
-              className="bg-green-600 dark:bg-green-500 hover:bg-green-700 dark:hover:bg-green-600 text-white"
-              onClick={() => router.push("/sign-up")}
-            >
-              Начать
-            </Button>
+            {doctor ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger
+                  asChild
+                  className="w-fit shadow-none bg-white text-black hover:bg-gray-200 dark:bg-slate-900 dark:text-gray-100 dark:hover:bg-slate-800 transition"
+                >
+                  <Button
+                    size="lg"
+                    className="data-[state=open]:bg-white dark:data-[state=open]:bg-slate-900 dark:data-[state=open]:text-sidebar-accent-foreground"
+                  >
+                    <Avatar className="h-8 w-8 rounded-lg">
+                      <AvatarImage
+                        src={doctor.avatar ?? "https://github.com/shadcn.png"}
+                        alt={doctor.full_name}
+                      />
+                      <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                    </Avatar>
+                    <div className="grid flex-1 text-left text-sm leading-tight">
+                      <span className="truncate font-semibold">
+                        {doctor.full_name}
+                      </span>
+                      <span className="truncate text-xs">{doctor.email}</span>
+                    </div>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+                  align="end"
+                  sideOffset={4}
+                >
+                  <DropdownMenuGroup>
+                    <DropdownMenuItem onClick={() => router.push("/profile")}>
+                      <BadgeCheck />
+                      Аккаунт
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Bell />
+                      Уведомления
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={signOut}>
+                    <LogOut />
+                    Выйти с аккаунта
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <>
+                <Button
+                  variant="outline"
+                  className="hidden md:flex border-green-600 dark:border-green-500 text-green-600 dark:text-green-500 hover:bg-black/20"
+                  onClick={() => router.push("/sign-in")}
+                >
+                  Войти
+                </Button>
+                <Button
+                  className="bg-green-600 dark:bg-green-500 hover:bg-green-700 dark:hover:bg-green-600 text-white"
+                  onClick={() => router.push("/sign-up")}
+                >
+                  Начать
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </header>
@@ -362,13 +436,28 @@ export default function Home() {
                     >
                       Найти Клинику
                     </Button>
-                    <Button
-                      size="lg"
-                      variant="outline"
-                      className="border-green-600 text-green-600 hover:bg-green-50"
-                    >
-                      Записаться На Приём
-                    </Button>
+                    {doctor ? (
+                      <>
+                        <Button
+                          size="lg"
+                          variant="outline"
+                          className="border-green-600 text-green-600 hover:bg-green-50"
+                          onClick={() => router.push("/dashboard")}
+                        >
+                          Перейти домой
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Button
+                          size="lg"
+                          variant="outline"
+                          className="border-green-600 text-green-600 hover:bg-green-50"
+                        >
+                          Записаться На Приём
+                        </Button>
+                      </>
+                    )}
                   </div>
                   <div className="flex items-center gap-6 text-sm text-gray-600">
                     <div className="flex items-center gap-2">

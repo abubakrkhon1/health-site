@@ -8,6 +8,7 @@ import {
   CreditCard,
   LogOut,
   Sparkles,
+  User,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -74,7 +75,6 @@ export const NavUser = memo(function NavUser({ doctor }: { doctor: Doctor }) {
                 </span>
                 <span className="truncate text-xs">{doctor.email}</span>
               </div>
-              <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -94,7 +94,9 @@ export const NavUser = memo(function NavUser({ doctor }: { doctor: Doctor }) {
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">
-                    {doctor.full_name}
+                    <div className="flex items-center gap-x-1">
+                      {doctor.full_name} <BadgeCheck size={15} color="blue"/>
+                    </div>
                   </span>
                   <span className="truncate text-xs">{doctor.email}</span>
                 </div>
@@ -103,7 +105,7 @@ export const NavUser = memo(function NavUser({ doctor }: { doctor: Doctor }) {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem onClick={() => router.push("/profile")}>
-                <BadgeCheck />
+                <User />
                 Аккаунт
               </DropdownMenuItem>
               <DropdownMenuItem>
