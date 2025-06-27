@@ -6,8 +6,27 @@ import { ThemeProvider } from "@/components/theme-provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "MedEx",
-  description: "Doctor's clinic appointment management system",
+  title: "MedEx — Онлайн клиника",
+  description: "Онлайн-система записи на приём к врачам. Удобно, быстро, безопасно.",
+  keywords: ["MedEx", "клиника", "врачи", "запись", "медицина", "онлайн приём"],
+  authors: [{ name: "MedEx Team" }],
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
+  },
+  openGraph: {
+    title: "MedEx — Онлайн клиника",
+    description: "Запишитесь к врачу онлайн с помощью MedEx. Упрощаем медицинские визиты.",
+    url: "https://www.med-ex.uz",
+    siteName: "MedEx",
+    locale: "ru_UZ",
+    type: "website",
+  },
+  metadataBase: new URL("https://www.med-ex.uz"),
 };
 
 export default function RootLayout({
@@ -16,20 +35,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
-      <html lang="en" suppressHydrationWarning>
-        <head />
-        <body>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            {children}
-          </ThemeProvider>
-        </body>
-      </html>
-    </>
+    <html lang="ru" suppressHydrationWarning>
+      <head>
+        {/* Optional extra meta */}
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content="#ffffff" />
+        <link rel="icon" href="/favicon.ico" />
+      </head>
+      <body className={inter.className}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
+      </body>
+    </html>
   );
 }
