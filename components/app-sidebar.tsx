@@ -61,12 +61,12 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader>
-        <div className=" ml-4 mt-4">
+        <div className="ml-2 mt-4 w-[120px] h-[40px] relative">
           <Image
             src="/logo/logo2_no_bg_short.png"
-            width={120}
-            height={120}
+            fill
             alt="logo"
+            className="object-contain"
             priority
           />
         </div>

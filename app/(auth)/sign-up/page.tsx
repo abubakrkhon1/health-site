@@ -133,6 +133,7 @@ export default function SignupPage() {
                 onValueChange={(value) =>
                   setFormData((prev) => ({ ...prev, specialization: value }))
                 }
+                required
               >
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Выберите специализацию" />
@@ -141,7 +142,7 @@ export default function SignupPage() {
                   <SelectGroup>
                     <SelectLabel>Специализация</SelectLabel>
                     <SelectItem value="Cardiology">Кардиолог</SelectItem>
-                    <SelectItem value="GeneralPractitioner">
+                    <SelectItem value="General Practitioner">
                       Терапевт
                     </SelectItem>
                     <SelectItem value="Pediatrician">Педиатр</SelectItem>
