@@ -26,9 +26,13 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const isPublic = ["/", "/sign-in", "/sign-up"].includes(
-    request.nextUrl.pathname
-  );
+  const isPublic = [
+    "/",
+    "/sign-in",
+    "/sign-up",
+    "/robots.txt",
+    "/sitemap.xml",
+  ].includes(request.nextUrl.pathname);
 
   // ✅ Redirect unauthenticated users away from private pages
   if (!isPublic && !user) {
