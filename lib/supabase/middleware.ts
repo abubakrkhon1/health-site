@@ -32,6 +32,7 @@ export async function updateSession(request: NextRequest) {
     "/sign-up",
     "/robots.txt",
     "/sitemap.xml",
+    "/sitemap-0.xml",
   ].includes(request.nextUrl.pathname);
 
   // ✅ Redirect unauthenticated users away from private pages
