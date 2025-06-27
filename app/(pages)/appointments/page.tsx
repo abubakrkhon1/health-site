@@ -30,7 +30,6 @@ export default function AppointmentsPage() {
             client:clients (*),
             doctor:doctors (*)`
         )
-        .gte("scheduled_at", new Date().toISOString())
         .eq("doctor_id", user?.id)
         .order("scheduled_at", { ascending: false });
 

@@ -69,7 +69,7 @@ export default function Dashboard() {
     },
     {
       title: "Доход сегодня",
-      value: "₽111",
+      value: "$111",
       change: "-8% с вчера",
       changeType: "negative",
       icon: DollarSign,
@@ -196,10 +196,10 @@ export default function Dashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-lg font-semibold text-black dark:text-white">
-                    Приёмы сегодня
+                    Предстоящие приёмы
                   </h3>
                   <p className="text-sm text-gray-600 dark:text-white/50">
-                    Ваше расписание на сегодня
+                    Ваше расписание
                   </p>
                 </div>
                 <button className="h-8 w-8 p-2 rounded-md border border-gray-300 dark:border-white/50 hover:bg-gray-200 dark:hover:bg-slate-600 flex items-center justify-center transition">

@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Bell,
   Globe,
@@ -14,6 +14,7 @@ import {
   Key,
   Database,
 } from "lucide-react";
+import { useAuthStore } from "@/store/useAuthStore";
 
 export default function Settings() {
   const [emailNotifications, setEmailNotifications] = useState(true);
@@ -24,6 +25,15 @@ export default function Settings() {
   const [theme, setTheme] = useState("system");
   const [twoFactor, setTwoFactor] = useState(false);
   const [sessionTimeout, setSessionTimeout] = useState("30");
+
+  const doctor = useAuthStore((s) => s.doctor);
+  const [name, setName] = useState("");
+
+  useEffect(() => {
+    if (doctor?.full_name) {
+      setName(doctor.full_name);
+    }
+  }, [doctor?.full_name]);
 
   const Switch = ({ checked, onChange, disabled = false }) => (
     <button
@@ -117,8 +127,8 @@ export default function Settings() {
                 description="Это имя будет отображаться в интерфейсе"
               >
                 <Input
-                  value="Иван Петров"
-                  onChange={() => {}}
+                  value={name}
+                  onChange={(e:any) => setName(e.target.value)}
                   placeholder="Введите имя"
                 />
               </SettingRow>

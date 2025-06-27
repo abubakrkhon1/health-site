@@ -17,6 +17,15 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Stethoscope } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function SignupPage() {
   const [formData, setFormData] = useState({
@@ -119,14 +128,28 @@ export default function SignupPage() {
 
             <div className="space-y-2">
               <Label htmlFor="specialization">Специализация</Label>
-              <Input
-                id="specialization"
-                name="specialization"
-                placeholder="Кардиолог, педиатр и тд."
+              <Select
                 value={formData.specialization}
-                onChange={handleChange}
-                required
-              />
+                onValueChange={(value) =>
+                  setFormData((prev) => ({ ...prev, specialization: value }))
+                }
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Выберите специализацию" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Специализация</SelectLabel>
+                    <SelectItem value="Cardiology">Кардиолог</SelectItem>
+                    <SelectItem value="GeneralPractitioner">
+                      Терапевт
+                    </SelectItem>
+                    <SelectItem value="Pediatrician">Педиатр</SelectItem>
+                    <SelectItem value="Dermatologist">Дерматолог</SelectItem>
+                    <SelectItem value="Dentist">Стоматолог</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="space-y-2">
