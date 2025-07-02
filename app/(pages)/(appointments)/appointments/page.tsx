@@ -13,10 +13,11 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/lib/supabase/supabaseClient";
 import { Appointment } from "@/types/types";
 import { format } from "date-fns";
+import AppointmentsList from "@/components/appointments-list";
 
 export default function AppointmentsPage() {
   const [appointments, setAppointments] = useState([]);
-  const { loading, user } = useAuth();
+  const { user } = useAuth();
   const [appLoading, setAppLoading] = useState(true);
 
   // Fetching Appointments from Supabase database
@@ -43,7 +44,7 @@ export default function AppointmentsPage() {
     };
     fetchAppointments();
   }, [user?.id]);
-
+  
   const stats = [
     {
       title: "Приёмы сегодня",
@@ -59,13 +60,13 @@ export default function AppointmentsPage() {
       title: "Подтверждённые",
       value: "#",
       icon: CheckCircle,
-      color: 'blue'
+      color: "blue",
     },
     {
       title: "Что-то",
       value: "#",
       icon: DollarSign,
-      color: 'green'
+      color: "green",
     },
   ];
 
@@ -114,7 +115,10 @@ export default function AppointmentsPage() {
                     </p>
                   </div>
                   <div className="h-8 w-8 bg-gray-100 dark:bg-slate-600 rounded-md flex items-center justify-center">
-                    <IconComponent color={stat.color} className="h-4 w-4 dark:text-white/70" />
+                    <IconComponent
+                      color={stat.color}
+                      className="h-4 w-4 dark:text-white/70"
+                    />
                   </div>
                 </div>
               </div>
@@ -141,56 +145,10 @@ export default function AppointmentsPage() {
             </div>
           </div>
           <div className="p-6">
-            <div className="space-y-4">
-              {appLoading
-                ? Array.from({ length: 4 }).map((_, id) => (
-                    <div
-                      key={id}
-                      className="flex h-16 animate-pulse bg-gray-200 items-center justify-between p-4 rounded-lg dark:hover:bg-slate-800 hover:bg-gray-200 transition-colors"
-                    ></div>
-                  ))
-                : appointments.map((appt: Appointment, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between p-4 rounded-lg dark:hover:bg-slate-800 hover:bg-gray-50 transition-colors"
-                    >
-                      <div className="space-y-1">
-                        <p className="font-medium dark:text-white/90">
-                          {appt.client.full_name}
-                        </p>
-                        <p className="text-sm dark:text-white/50">
-                          {appt.notes || "Notes..."}
-                        </p>
-                        <div className="flex items-center space-x-2 text-sm dark:text-white/40">
-                          <Clock className="h-4 w-4" />
-                          <span>
-                            {format(
-                              new Date(appt.scheduled_at),
-                              "dd MMM yyyy, HH:mm"
-                            )}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-4">
-                        <span
-                          className={`px-3 py-1 rounded-full text-xs ${getStatusColor(
-                            appt.status
-                          )}`}
-                        >
-                          {appt.status}
-                        </span>
-                        <div className="flex items-center space-x-2">
-                          <button className="p-2 hover:bg-slate-700 rounded-md transition-colors">
-                            <Eye className="h-4 w-4 dark:text-white/70" />
-                          </button>
-                          <button className="p-2 hover:bg-slate-700 rounded-md transition-colors">
-                            <Edit className="h-4 w-4 dark:text-white/70" />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-            </div>
+            <AppointmentsList
+              appLoading={appLoading}
+              appointments={appointments}
+            />
           </div>
         </div>
       </div>

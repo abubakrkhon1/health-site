@@ -1,5 +1,4 @@
 "use client";
-
 import Link from "next/link";
 import {
   Search,
@@ -13,7 +12,6 @@ import {
   Heart,
   Stethoscope,
   ChevronRight,
-  ChevronsUpDown,
   BadgeCheck,
   Bell,
   LogOut,
@@ -35,20 +33,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar";
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 const clinics = [
   {

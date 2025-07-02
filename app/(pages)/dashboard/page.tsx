@@ -10,12 +10,12 @@ import {
   MoreHorizontal,
   ChevronRight,
 } from "lucide-react";
-import AppointmentCard from "@/components/appointment-card";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/lib/supabase/supabaseClient";
-import { Appointment, AppointmentCardProps } from "@/types/types";
 import { useRouter } from "next/navigation";
+import AppointmentsList from "@/components/appointments-list";
+import { format, formatDate, startOfToday } from "date-fns";
 
 export default function Dashboard() {
   const doctor = useAuthStore((s) => s.doctor);
@@ -28,26 +28,46 @@ export default function Dashboard() {
   useEffect(() => {
     if (!user?.id) return;
     setAppLoading(true);
+
     const fetchAppointments = async () => {
+      // First, let's see what dates look like in your database
+      const { data: allData, error: debugError } = await supabase
+        .from("appointments")
+        .select("scheduled_at")
+        .eq("doctor_id", user.id)
+        .limit(5);
+
+      console.log(
+        "Sample scheduled_at values:",
+        allData?.map((item) => item.scheduled_at)
+      );
+
+      const formattedNow = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss");
+      console.log("Our formatted date:", formattedNow);
+
       const { data, error } = await supabase
         .from("appointments")
         .select(
-          `*,
-          client:clients (*),
-          doctor:doctors (*)`
+          `
+        *,
+        client:clients (*),
+        doctor:doctors (*)
+        `
         )
-        .gte("scheduled_at", new Date().toISOString())
-        .eq("doctor_id", user?.id)
+        .eq("doctor_id", user.id)
+        .gte("scheduled_at", formattedNow)
         .order("scheduled_at", { ascending: true });
 
       if (error) {
         console.error("Error fetching appointments:", error.message);
+        setAppLoading(false);
         return;
       }
 
       setAppointments(data as []);
       setAppLoading(false);
     };
+
     fetchAppointments();
   }, [user?.id]);
 
@@ -208,19 +228,10 @@ export default function Dashboard() {
               </div>
             </div>
             <div className="p-6">
-              <div className="space-y-4">
-                {appLoading
-                  ? // Show skeleton cards with same dimensions as real cards
-                    Array.from({ length: 3 }).map((_, i) => (
-                      <div
-                        key={i}
-                        className="h-16 bg-gray-200 rounded-lg animate-pulse"
-                      />
-                    ))
-                  : appointments.map((appt: Appointment) => (
-                      <AppointmentCard key={appt.id} appointment={appt} />
-                    ))}
-              </div>
+              <AppointmentsList
+                appLoading={appLoading}
+                appointments={appointments}
+              />
               <div className="mt-6 pt-4 border-t border-gray-300 dark:border-white/50">
                 <button
                   onClick={() => router.push("/appointments")}

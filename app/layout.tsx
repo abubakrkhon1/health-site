@@ -6,7 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "MedEx — Онлайн клиника",
+  title: "MedEx - Онлайн инструмент для клиник",
   icons: { icon: "/favicon.ico" },
   description:
     "Онлайн-система записи на приём к врачам. Удобно, быстро, безопасно.",
@@ -28,6 +28,9 @@ export const metadata: Metadata = {
     siteName: "MedEx",
     locale: "ru_UZ",
     type: "website",
+  },
+  other: {
+    name: "MedEx - Онлайн инструмент для клиник",
   },
   metadataBase: new URL("https://www.med-ex.uz"),
 };
