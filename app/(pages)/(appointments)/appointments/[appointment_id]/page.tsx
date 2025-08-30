@@ -39,14 +39,15 @@ export default function AppointmentInfoPage() {
         .from("appointments")
         .select(
           `*,
-              patient:clients (*),
-              doctor:doctors (*),
-              medical_card:medical_cards (*)`
+        doctor:doctors (*),
+        patient:clients (
+          *,
+          card:medical_cards (*)
+        )`
         )
         .eq("doctor_id", user?.id)
         .eq("id", appointment_id)
         .single();
-      console.log(data);
 
       if (error) {
         console.error("Error fetching appointments:", error.message);
@@ -54,7 +55,13 @@ export default function AppointmentInfoPage() {
         return;
       }
 
-      setAppointment(data as any);
+      // flatten here
+      const flattened = {
+        ...data,
+        medical_card: data.patient?.card?.[0] ?? null,
+      };
+
+      setAppointment(flattened as any);
       setAppLoading(false);
     };
     fetchAppointment();
@@ -360,10 +367,10 @@ export default function AppointmentInfoPage() {
     id,
     notes,
     patient,
-    medical_card,
     patient_id,
     scheduled_at,
     status,
+    medical_card
   } = appointment!;
 
   const parsedDOB = parse(patient.dob, "dd/MM/yyyy", new Date());
